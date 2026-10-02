@@ -1,75 +1,85 @@
 # ReviewToolLite
 
-ReviewToolLite 是 [SuperGrey][1] 開發的中文維基百科評審工具
-[ReviewTool][2] 的精簡版。
-此 Lite 版著重於產生逐句評審意見，因此僅保留條目頁的「批註模式」，
-並移除「評審管理」功能。
+[English](README.md) · [繁體中文](README.zh-Hant.md) · [简体中文](README.zh-Hans.md)
 
-## 說明
+ReviewToolLite helps you review Chinese Wikipedia articles sentence by sentence.
+Select a passage, save a private comment, and copy your collected feedback as
+wikitext for a talk page or review discussion.
 
-- **直接複製評審文字**：在批註清單中點選「複製」，
-  即可取得整理好的評審維基語法，貼到評審頁後再自行修改。
-  - 同一瀏覽器首次成功複製某條目的評審文字時，最上方會附上
-    `意見由[[WP:ReviewTool|ReviewTool]]協助生成。`，
-    之後複製該條目時不再重複加入。
-- **註腳複製選單**：在批註模式中，將滑鼠移到註腳上，
-  再開啟旁邊的複製選單，選擇「複製12a」等單筆項目或「複製本組」。
-  複製內容包含來源與可用的存檔連結，方便在來源評審中引用、查核與討論。
-- **啟用時清除與復原**：每次載入頁面後，首次啟用批註模式時，
-  若本頁已有批註，會透過 Codex 對話框詢問是否清除；按「取消」可保留。
-  誤清除時，可點選通知或批註清單中的「復原清除」。
-- **排版捷徑**：輸入 `<<文字>>`，會自動轉為 `「{{仿宋体|1=文字}}」`。
-- **快速輸入**：批註輸入框上方的「小字」與「開玩笑的」按鈕，
-  可將選取文字包在 `<small>…</small>` 或帶有「開玩笑的」提示的
-  灰色刪除線 `<span>` 中；
-  未選取文字時，會在游標處插入標籤，並將游標置於標籤內。
-- **子點列評註**：在已有文字的意見行尾按 Enter，
-  會為上一行補上 `* ` 標記，就同一句話形成縮排點列批註。
-- **相關來源**：批註對話框在原文與輸入框之間列出來源標題連結，
-  點選旁邊的「[複製22a]」等文字，即可複製註腳並貼入評語。
-- **批註時間**：批註清單最上方顯示目前批註的首次建立時間及最近編輯時間，
-  使用瀏覽器的本機時區，格式如 `2026年9月23日 14:30 [45分鐘前]`，
-  每分鐘更新相對時間。
-- **匯入與匯出備份**：在批註清單的「匯入／匯出」選單中，
-  可將批註匯出為 JSON 檔案，或把備份匯入目前條目。
-- **複製並前往**：複製成功後，可前往條目討論頁、典範條目評選、
-  特色列表評選、優良條目評選或同行評審；評審頁會定位至本條目的章節。
+<!-- toc:start -->
 
-## 使用方式
+## Contents
 
-建議透過瀏覽器主控台（Console）使用：
+- [Features](#features)
+- [Installation](#installation)
+- [How to use](#how-to-use)
+  - [Your data](#your-data)
+- [Screenshots](#screenshots)
+- [Help](#help)
+- [License](#license)
 
-1. 從 [發行版本（Releases）][6] 下載 `bundled.js`。
-2. 開啟要評審的條目，按 F12 開啟開發者工具，切換至主控台（Console），
-   貼上指令碼的完整內容並按 Enter。
-3. 在「更多／工具」開啟「批註模式」，選取文字即可新增批註；
-   點選「查看批註」可編輯、備份及複製評審文字。
+<!-- toc:end -->
 
-此方式僅在目前頁面生效，重新載入後需再執行一次。若希望自動載入，
-也可從同一發行版本下載 `ReviewToolLite.user.js`，以 Greasemonkey 安裝。
+## Features
 
-版本變更請見[變更紀錄](CHANHELOG.md)。
+- Comment on selected text or a whole sentence and return to comments beside the article.
+- Inspect related citations and copy source, reference, and archive links.
+- Sort your comments by article position or time, then copy a review with a permanent revision link.
+- Export and import JSON backups, and undo the most recent clearing of comments.
 
-## 開發與建置
+## Installation
 
-使用 Node.js 24，先執行 `npm ci` 安裝開發相依套件。
-修改 `src/` 中的 TypeScript、Vue 元件及 CSS，然後重新建置；
-`dist/` 為自動產生的檔案，不應直接修改。
+Choose one installation method. The following links always download the latest project distribution.
 
-```sh
-npm test
-npm run lint
-npm run typecheck
-npm run build
-```
+| Method               | Latest file                                                                                                                | How to use it                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Tampermonkey         | [ReviewToolLite.user.js](https://github.com/For-Each-Next/wp-revtool-lite/releases/download/latest/ReviewToolLite.user.js) | Open the link in Tampermonkey and confirm installation.            |
+| Personal wiki script | [bundled.min.js](https://github.com/For-Each-Next/wp-revtool-lite/releases/download/latest/bundled.min.js)                 | Copy the downloaded compact file into your personal `common.js`.   |
+| Readable script      | [bundled.js](https://github.com/For-Each-Next/wp-revtool-lite/releases/download/latest/bundled.js)                         | Inspect the readable code or run it once from the browser console. |
 
-`npm run build` 產生可閱讀的 `dist/bundled.js`
-及 `dist/ReviewToolLite.user.js`；
-`npm run release` 壓縮 `bundled.js`，使用者指令碼仍保留可閱讀的格式。
-開發時可使用 `npm run watch` 自動重新建置。
-版本號以 `package.json` 為準，並同步更新 `package-lock.json`；
-建置時會自動寫入兩個發行檔。
+For personal wiki installation, open the downloaded `bundled.min.js`, copy its entire contents into your Chinese Wikipedia `common.js`, and save the page.
 
-[1]: https://zh.wikipedia.org/wiki/User:SuperGrey
-[2]: https://zh.wikipedia.org/wiki/User:SuperGrey/gadgets/ReviewTool
-[6]: https://github.com/For-Each-Next/ReviewToolLite/releases
+Use a current browser on Chinese Wikipedia. ReviewToolLite runs on article view
+pages. Clipboard actions require clipboard permission. The userscript includes
+readable code and Tampermonkey metadata.
+
+To remove ReviewToolLite, disable or uninstall its Tampermonkey script, or remove its code from `common.js`, then reload the page. Export your comments first if you also plan to clear browser storage.
+
+## How to use
+
+1. Open an article and choose **Enable annotation mode** (「啟用批註模式」) in the page tools menu.
+2. Click a sentence or select a passage, then click **Annotate** (「批註」).
+3. Enter your feedback and click **Add** (「新增」).
+4. Open **View annotations** (「查看批註」) to edit, back up, or copy your review.
+5. Paste the copied wikitext into the destination page, check it, and submit it yourself.
+
+The interface follows your Chinese language variant. Read the [usage guide](docs/usage.md)
+for source links, input shortcuts, sorting, and review destinations.
+
+### Your data
+
+Comments stay in this browser on this wiki. Export a JSON backup before clearing
+browser data or switching browsers. Importing a backup merges its comments into
+the current article. **Clear all** can be undone once; deleting an individual
+comment is permanent. Saving and copying do not submit wiki edits.
+
+Read about [storage and backups](docs/storage.md).
+
+## Screenshots
+
+![ReviewToolLite showing comments on the BanG Dream! article](docs/images/annotation-viewer.png)
+
+The screenshots use excerpts from the [BanG Dream! 少女樂團派對 article, revision 94028176](https://zh.wikipedia.org/w/index.php?oldid=94028176), in an offline page with illustrative feedback.
+See the [screenshot source and reproduction notes](docs/screenshots.md).
+
+## Help
+
+See [troubleshooting](docs/troubleshooting.md), [supported pages](docs/configuration.md),
+[release notes](CHANGELOG.md), or [report a problem](https://github.com/For-Each-Next/wp-revtool-lite/issues).
+Contributor information is in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+ReviewToolLite is based on [ReviewTool by SuperGrey](https://zh.wikipedia.org/wiki/User:SuperGrey/gadgets/ReviewTool).
+It retains the original Quinn Gao copyright notice and [MIT license](LICENSE).
+Article excerpts have their own [CC BY-SA 4.0 attribution](docs/screenshots.md).

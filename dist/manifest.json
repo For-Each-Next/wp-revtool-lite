@@ -1,0 +1,20 @@
+{
+    "name": "ReviewToolLite",
+    "version": "1.2.1",
+    "license": "MIT",
+    "repository": "https://github.com/For-Each-Next/wp-revtool-lite",
+    "files": {
+        "bundled.js": {
+            "bytes": 173395,
+            "sha256": "58f0b61672ce129733461cd9dec8a10e017fa19da1fb15689ab53a6406847751"
+        },
+        "bundled.min.js": {
+            "bytes": 87845,
+            "sha256": "3d18118e1ca4786490c7c961bd93a48fe37e434938da225cb7ee6030ed6267b7"
+        },
+        "ReviewToolLite.user.js": {
+            "bytes": 182924,
+            "sha256": "ba301a6a71dfe16b29ef7403e1eb9d601189a5ec03f969d8d159a9f8f4b74131"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "entry": [
+        "src/index.ts!",
+        "src/features/annotations/components/*.ts",
+        "src/types/*.d.ts!",
+        "tests/**/*.mjs",
+        "scripts/*.mjs",
+        "src/platform/browser/dom/reference-links.ts"
+    ],
+    "project": [
+        "src/**/*.{ts,vue}",
+        "scripts/*.mjs",
+        "tests/**/*.mjs"
+    ]
+}

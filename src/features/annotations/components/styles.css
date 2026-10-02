@@ -1,0 +1,541 @@
+/**
+ * @file src/features/annotations/components/styles.css
+ * Purpose: src / features / annotations / styles module.
+ *
+ * Table of contents:
+ * 1. Styles and responsive rules
+ */
+
+.review-tool-dialog {
+    /* Wrap prose and long URLs without hiding any of the annotation. */
+    overflow-wrap: anywhere;
+    color: var(--color-base, #202122);
+    line-height: 1.6;
+}
+
+.review-tool-dialog .cdx-button,
+.review-tool-dialog .cdx-menu-button {
+    max-inline-size: 100%;
+}
+
+.review-tool-dialog .cdx-menu-button,
+.review-tool-dialog .cdx-text-area,
+.review-tool-dialog .cdx-select-vue__handle {
+    /* Codex form controls otherwise have a 256px minimum width. */
+    min-inline-size: 0;
+}
+
+.review-tool-dialog .cdx-menu-button > .cdx-button {
+    inline-size: 100%;
+}
+
+/* Keep controls one line high; the full label remains in their text and title. */
+.review-tool-control-label {
+    display: block;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.review-tool-dialog .review-tool-form-section:not(:first-child) {
+    margin-block-start: var(--spacing-100, 16px);
+}
+
+.review-tool-dialog textarea {
+    min-height: 32px;
+    max-height: 160px;
+    resize: vertical;
+}
+
+/* Annotation controls */
+.review-tool-annotation-ui.floating-button {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    z-index: 300;
+    pointer-events: auto;
+    background: var(--background-color-progressive, #36c);
+    color: #fff;
+    border: none;
+    padding: 6px 8px;
+    border-radius: var(--border-radius-base, 2px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.review-tool-annotation-ui.floating-button:hover {
+    background: var(--background-color-progressive--hover, #447ff5);
+}
+
+.review-tool-annotation-ui.floating-button:focus-visible,
+.review-tool-global-button:focus-visible,
+.review-tool-inline-annotation__icon:focus-visible,
+.review-tool-reference-menu button:focus-visible,
+.review-tool-reference-tip button:focus-visible {
+    outline: 2px solid var(--color-progressive, #36c);
+    outline-offset: 2px;
+}
+
+.review-tool-reference-tip {
+    margin-inline-start: 0.25em;
+    color: var(--color-subtle, #54595d);
+    font-size: 0.75em;
+    vertical-align: super;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.review-tool-reference-tip button {
+    appearance: none;
+    padding: 0 0.15em;
+    border: 0;
+    background: transparent;
+    color: var(--color-progressive, #36c);
+    font: inherit;
+    cursor: pointer;
+}
+
+.review-tool-reference-tip button:hover,
+.review-tool-reference-tip button:focus-visible {
+    text-decoration: underline;
+}
+
+.review-tool-reference-tip .review-tool-reference-trigger {
+    padding: 1px 5px;
+    border: 1px solid var(--border-color-base, #a2a9b1);
+    border-radius: 2px;
+    background: var(--background-color-base, #fff);
+    color: var(--color-base, #202122);
+}
+
+.review-tool-reference-tip .review-tool-reference-trigger:hover {
+    background: var(--background-color-interactive, #eaecf0);
+    text-decoration: none;
+}
+
+.review-tool-reference-menu {
+    position: fixed;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    min-width: 10em;
+    max-width: calc(100vw - 8px);
+    max-height: calc(100vh - 8px);
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 4px;
+    border: 1px solid var(--border-color-base, #a2a9b1);
+    border-radius: 4px;
+    background: var(--background-color-base, #fff);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: normal;
+}
+
+.review-tool-reference-menu button {
+    padding: 6px 12px;
+    text-align: start;
+    color: var(--color-base, #202122);
+}
+
+.review-tool-reference-menu button:hover,
+.review-tool-reference-menu button:focus-visible {
+    background: var(--background-color-interactive, #eaecf0);
+    text-decoration: none;
+}
+
+.review-tool-reference-menu button:disabled {
+    color: var(--color-disabled, #72777d);
+    cursor: default;
+}
+
+.review-tool-reference-tip[hidden],
+.review-tool-reference-tip [hidden] {
+    display: none;
+}
+
+.review-tool-undo-clear {
+    margin-inline-start: 8px;
+    cursor: pointer;
+}
+
+.review-tool-global-button {
+    display: none;
+    position: fixed;
+    inset-block-end: 20px;
+    inset-inline-end: 20px;
+    z-index: 300;
+    padding: 10px 16px;
+    background: var(--background-color-progressive, #36c);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.review-tool-global-button:hover {
+    background: var(--background-color-progressive--hover, #447ff5);
+}
+
+.review-tool-annotation-mode .review-tool-global-button {
+    display: block;
+}
+
+.review-tool-inline-annotation {
+    display: none;
+    align-items: center;
+    margin-inline-start: 4px;
+    vertical-align: baseline;
+    gap: 2px;
+}
+
+.review-tool-annotation-mode .review-tool-inline-annotation {
+    display: inline-flex;
+}
+
+.review-tool-inline-annotation__icon {
+    background: var(--background-color-warning-subtle, #fff7d1);
+    border: 1px solid var(--border-color-warning, #f5c400);
+    border-radius: 999px;
+    color: var(--color-base, #202122);
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 1.3;
+    padding: 0 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 16px;
+}
+
+.review-tool-inline-annotation__icon:hover {
+    background: var(--background-color-warning, #ffe58f);
+}
+
+.review-tool-annotation-editor__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-base, #202122);
+    margin-block-end: 4px;
+}
+
+.review-tool-annotation-editor__section {
+    font-size: 14px;
+    color: var(--color-base, #202122);
+}
+
+.review-tool-annotation-editor__quote {
+    background: var(--background-color-neutral-subtle, #f8f9fa);
+    border-inline-start: 3px solid var(--border-color-base, #a2a9b1);
+    padding: 12px;
+    white-space: pre-wrap;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.review-tool-annotation-editor__quote:focus-visible {
+    outline: 2px solid var(--color-progressive, #36c);
+    outline-offset: 2px;
+}
+
+.review-tool-annotation-editor__error {
+    margin-block-start: 8px;
+}
+
+.review-tool-annotation-editor__hint,
+.review-tool-annotation-viewer__summary,
+.review-tool-annotation-viewer__empty p {
+    color: var(--color-subtle, #54595d);
+    font-size: 14px;
+    margin-block: 8px 0;
+}
+
+.review-tool-annotation-editor__quick-input {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-75, 12px);
+    margin-block-end: 8px;
+}
+
+.review-tool-annotation-editor__footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-75, 12px);
+    padding-block-start: 12px;
+    border-block-start: 1px solid var(--border-color-subtle, #c8ccd1);
+}
+
+.review-tool-annotation-editor__sources-hint {
+    margin: 4px 0;
+    font-size: 12px;
+    color: var(--color-subtle, #54595d);
+}
+
+.review-tool-annotation-editor__sources {
+    margin: 0;
+    padding-inline-start: 24px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.review-tool-annotation-editor__sources li {
+    margin-bottom: 8px;
+}
+
+.review-tool-annotation-editor__sources a {
+    overflow-wrap: anywhere;
+}
+
+.review-tool-source-copy {
+    margin-inline-start: 12px;
+    white-space: nowrap;
+}
+
+.review-tool-annotation-editor__sources code {
+    display: block;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
+
+.review-tool-annotation-editor__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-75, 12px);
+    margin-inline-start: auto;
+}
+
+.review-tool-annotation-viewer__empty {
+    text-align: center;
+    color: var(--color-base, #202122);
+    padding-block: 32px;
+}
+
+.review-tool-annotation-viewer__empty strong {
+    display: block;
+    font-size: 18px;
+}
+
+.review-tool-annotation-viewer__feedback {
+    margin-block-end: 16px;
+}
+
+.review-tool-annotation-viewer__progress {
+    margin-block-start: 8px;
+}
+
+.review-tool-annotation-viewer__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-75, 12px);
+    padding-block-start: 12px;
+    border-block-start: 1px solid var(--border-color-subtle, #c8ccd1);
+}
+
+.review-tool-annotation-viewer__footer-left {
+    display: flex;
+    align-items: center;
+}
+
+.review-tool-annotation-viewer__maintenance {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-75, 12px);
+}
+
+.review-tool-annotation-viewer__sort-select {
+    inline-size: 220px;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+}
+
+.review-tool-annotation-viewer__footer-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-75, 12px);
+    flex-wrap: wrap;
+}
+
+.review-tool-annotation-viewer__footer-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-75, 12px);
+    justify-content: flex-end;
+    margin-inline-start: auto;
+    flex-wrap: wrap;
+}
+
+.review-tool-annotation-editor__footer,
+.review-tool-annotation-editor__actions,
+.review-tool-annotation-viewer__footer,
+.review-tool-annotation-viewer__footer-left,
+.review-tool-annotation-viewer__footer-controls,
+.review-tool-annotation-viewer__footer-actions {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+}
+
+@media (max-width: 480px) {
+    .review-tool-annotation-viewer__footer-controls,
+    .review-tool-annotation-viewer__footer-actions,
+    .review-tool-annotation-editor__footer,
+    .review-tool-annotation-editor__actions {
+        /* Components put primary actions first in DOM and keyboard order. */
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .review-tool-annotation-viewer__footer-actions,
+    .review-tool-annotation-editor__actions {
+        margin-inline-start: 0;
+    }
+
+    .review-tool-annotation-viewer__sort-select {
+        inline-size: 100%;
+    }
+}
+
+@media (max-width: 480px) and (max-height: 480px) {
+    /* Leave room for the content when a landscape screen or keyboard reduces height. */
+    .review-tool-annotation-viewer__footer-controls,
+    .review-tool-annotation-viewer__footer-actions,
+    .review-tool-annotation-editor__footer,
+    .review-tool-annotation-editor__actions {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .review-tool-annotation-viewer__footer-actions,
+    .review-tool-annotation-editor__actions {
+        margin-inline-start: auto;
+    }
+}
+
+.review-tool-annotation-viewer__section {
+    margin-block-end: 24px;
+}
+
+.review-tool-annotation-viewer__times {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--color-subtle, #54595d);
+}
+
+.review-tool-annotation-viewer__times > div {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 8px;
+    margin-bottom: 4px;
+}
+
+.review-tool-annotation-viewer__times dt {
+    font-weight: 600;
+}
+
+.review-tool-annotation-viewer__times dd {
+    margin: 0;
+}
+
+.review-tool-annotation-viewer__section-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+}
+
+.review-tool-annotation-viewer__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.review-tool-annotation-viewer__item {
+    border: 1px solid var(--border-color-subtle, #c8ccd1);
+    border-radius: var(--border-radius-base, 2px);
+    padding: 12px;
+    margin-block-end: 12px;
+    background: var(--background-color-base, #fff);
+}
+
+.review-tool-annotation-viewer__quote {
+    border-inline-start: 3px solid var(--border-color-subtle, #c8ccd1);
+    padding-inline-start: 12px;
+    color: var(--color-subtle, #54595d);
+}
+
+.review-tool-annotation-viewer__opinion {
+    margin-block-start: 8px;
+}
+
+.review-tool-annotation-viewer__quote,
+.review-tool-annotation-viewer__opinion {
+    white-space: pre-wrap;
+}
+
+.review-tool-annotation-viewer__meta {
+    font-size: 12px;
+    color: var(--color-subtle, #54595d);
+    margin-block-start: 8px;
+}
+
+.review-tool-annotation-viewer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-75, 12px);
+    margin-block-start: 8px;
+}
+
+/* Sentence selection and hover states. */
+.review-tool-annotation-ui.sentence {
+    background: transparent;
+    transition: background 120ms ease-in;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.review-tool-annotation-ui.sentence:hover {
+    background: var(
+        --background-color-warning-subtle,
+        rgba(255, 235, 59, 0.22)
+    ) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .review-tool-annotation-ui.sentence {
+        transition: none;
+    }
+}
+
+html.rt-selecting .review-tool-annotation-ui.sentence {
+    cursor: text;
+}
+
+/* While annotation mode is active, allow selection over known inline editor widgets
+   that set `user-select: none`. This only applies
+   while our mode is on to avoid changing page behavior permanently. */
+.review-tool-annotation-mode .ipe__in-article-link,
+.review-tool-annotation-mode .ipe-quick-edit,
+.review-tool-annotation-mode .ipe-quick-edit--create-only,
+.review-tool-annotation-mode .qeec-ref-tag-copy-btn {
+    user-select: text !important;
+    pointer-events: auto !important;
+}
+
+/* Tools menus perform an action, so retain native button semantics. */
+.review-tool-portlet-button {
+    text-align: start;
+    white-space: normal;
+    width: 100%;
+}

@@ -1,30 +1,63 @@
 {
-  "name": "reviewtool",
-  "version": "1.2.0",
-  "private": true,
-  "description": "Review articles and provide feedback on Chinese Wikipedia.",
-  "type": "module",
-  "scripts": {
-    "test": "node --test",
-    "build": "node build.mjs",
-    "watch": "node build.mjs --watch",
-    "release": "node build.mjs --release",
-    "lint": "eslint . --no-inline-config",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@types/node": "^24.10.1",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "@vue/compiler-sfc": "^3.4.38",
-    "@wikimedia/codex": "^2.7.0",
-    "esbuild": "^0.21.5",
-    "eslint": "^9.39.2",
-    "eslint-plugin-vue": "^10.7.0",
-    "jsdom": "^30.1.1",
-    "types-mediawiki": "^2.1.0",
-    "typescript": "^5.9.3",
-    "vue": "3.5.13",
-    "vue-eslint-parser": "^10.2.0"
-  }
+    "name": "reviewtool",
+    "version": "1.2.1",
+    "private": true,
+    "description": "Review articles and provide feedback on Chinese Wikipedia.",
+    "license": "MIT",
+    "type": "module",
+    "browser": "./src/app/browser.ts",
+    "engines": {
+        "node": "^24.15.0 || >=26.0.0"
+    },
+    "scripts": {
+        "test": "node --test tests/*.test.mjs",
+        "build": "node scripts/build.mjs",
+        "watch": "node scripts/build.mjs --watch",
+        "release": "node scripts/build.mjs --release",
+        "release:notes": "node scripts/release-notes.mjs",
+        "check:dist": "node scripts/check-dist.mjs",
+        "check": "npm run docs:check && npm run lint && npm run typecheck && npm run check:unused",
+        "verify": "npm run check && npm test && npm run build && npm run check:dist && node scripts/test-ui.mjs",
+        "lint": "eslint . --no-inline-config --max-warnings=0",
+        "typecheck": "tsc --noEmit",
+        "test:ui": "npm run build && node scripts/test-ui.mjs",
+        "screenshots": "npm run build && node scripts/test-ui.mjs --screenshots",
+        "docs:write": "node scripts/file-docs.mjs",
+        "docs:check": "node scripts/file-docs.mjs --check",
+        "check:unused": "knip"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.62.1",
+        "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.54.0",
+        "@typescript-eslint/parser": "^8.54.0",
+        "@vue/compiler-sfc": "^3.4.38",
+        "@wikimedia/codex": "^2.7.0",
+        "esbuild": "^0.28.2",
+        "eslint": "^9.39.2",
+        "eslint-plugin-vue": "^10.7.0",
+        "jsdom": "^30.1.1",
+        "knip": "^6.38.0",
+        "prettier": "^3.9.9",
+        "types-mediawiki": "^2.1.0",
+        "typescript": "^5.9.3",
+        "vue": "3.5.13",
+        "vue-eslint-parser": "^10.2.0"
+    },
+    "prettier": {
+        "singleQuote": true,
+        "tabWidth": 4,
+        "overrides": [
+            {
+                "files": [
+                    "*.md",
+                    "*.yml",
+                    "*.yaml"
+                ],
+                "options": {
+                    "tabWidth": 2
+                }
+            }
+        ]
+    }
 }

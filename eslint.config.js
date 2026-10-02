@@ -1,3 +1,13 @@
+/**
+ * @file eslint.config.js
+ * Purpose: eslint.config module.
+ *
+ * Table of contents:
+ * 1. Imports
+ * 2. Constants and state
+ * 3. Exports
+ */
+
 import { fileURLToPath } from 'node:url';
 import tseslint from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
@@ -11,8 +21,11 @@ const parserOptions = {
 };
 const typeCheckedRules = {
     ...tseslint.configs['recommended-type-checked'].rules,
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/consistent-type-imports': [
+        'error',
+        { disallowTypeAnnotations: false },
+    ],
 };
 
 export default [
@@ -31,13 +44,13 @@ export default [
             'object-shorthand': 'error',
             'object-curly-spacing': ['error', 'always'],
             quotes: ['error', 'single', { avoidEscape: true }],
-            indent: ['error', 4],
+            indent: 'off',
             'no-tabs': 'error',
         },
     },
 
     {
-        files: ['src/**/*.{ts,tsx}', 'global.d.ts'],
+        files: ['src/**/*.{ts,tsx}', 'src/types/host.d.ts'],
         languageOptions: {
             parser: tsParser,
             parserOptions,

@@ -1,112 +1,102 @@
+# @file .github/workflows/build.yml
+# Purpose: .github / workflows / build module.
+#
+# Table of contents:
+# 1. Workflow or configuration
+# End file heading
+
 name: Build and release
 
 on:
-    push:
-        branches: [main]
-        tags: ['v*']
-    pull_request:
-    workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
 
 permissions:
-    contents: read
+  contents: read
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
-    cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v7
-              with:
-                  persist-credentials: false
+  validate:
+    uses: ./.github/workflows/validate.yml
 
-            - uses: actions/setup-node@v7
-              with:
-                  node-version: '24'
-                  cache: npm
+  release:
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Download verified distribution
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ReviewToolLite
+          path: dist
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Publish or update release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          files=(dist/bundled.js dist/bundled.min.js dist/ReviewToolLite.user.js dist/manifest.json dist/LICENSE.txt)
+          for file in "${files[@]}"; do
+            test -s "$file"
+          done
 
-            - name: Run tests
-              run: npm test
+          if [[ "$RELEASE_TAG" == latest ]]; then
+            # An old rerun must not replace the current main build.
+            main_sha=$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq '.object.sha')
+            if [[ "$SOURCE_SHA" != "$main_sha" ]]; then
+              echo 'Skipping an outdated main build.'
+              exit 0
+            fi
+            cat > release-notes.md <<NOTES
+          Automatically built from main at $SOURCE_SHA.
+          These files are updated after successful main builds.
+          Use bundled.min.js for a compact MediaWiki gadget, bundled.js for readable source,
+          or ReviewToolLite.user.js for a userscript manager.
+          manifest.json records the version, byte sizes, and SHA-256 checksums.
+          NOTES
+            if gh release view latest > /dev/null 2>&1; then
+              gh release upload latest "${files[@]}" --clobber
+              gh api --method PATCH "repos/$GH_REPO/git/refs/tags/latest" \
+                -f sha="$SOURCE_SHA" -F force=true
+              gh release edit latest --latest --title 'ReviewToolLite latest' \
+                --notes-file release-notes.md
+            else
+              gh release create latest "${files[@]}" \
+                --target "$SOURCE_SHA" --latest --title 'ReviewToolLite latest' \
+                --notes-file release-notes.md
+            fi
+            exit 0
+          fi
 
-            - name: Lint code
-              run: npm run lint
-
-            - name: Check TypeScript
-              run: npm run typecheck
-
-            - name: Build JavaScript
-              run: npm run release
-
-            - name: Upload JavaScript
-              uses: actions/upload-artifact@v7
-              with:
-                  name: ReviewToolLite
-                  path: |
-                      dist/bundled.js
-                      dist/ReviewToolLite.user.js
-                  if-no-files-found: error
-
-    release:
-        if: >-
-            (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
-            (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
-        needs: build
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-        steps:
-            - uses: actions/download-artifact@v8
-              with:
-                  name: ReviewToolLite
-                  path: dist
-
-            - name: Publish or update JavaScript release
-              env:
-                  GH_TOKEN: ${{ github.token }}
-                  GH_REPO: ${{ github.repository }}
-                  RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'latest' }}
-                  SOURCE_SHA: ${{ github.sha }}
-              run: |
-                  if [[ "$RELEASE_TAG" == latest ]]; then
-                      # An old rerun must not replace the current main build.
-                      main_sha=$(gh api "repos/$GH_REPO/git/ref/heads/main" --jq '.object.sha')
-                      if [[ "$SOURCE_SHA" != "$main_sha" ]]; then
-                          echo 'Skipping an outdated main build.'
-                          exit 0
-                      fi
-                      cat > release-notes.md <<EOF
-                  Automatically built from main at $SOURCE_SHA.
-                  These JavaScript files are updated after successful main builds.
-                  EOF
-                      if gh release view latest > /dev/null 2>&1; then
-                          gh release upload latest dist/bundled.js dist/ReviewToolLite.user.js --clobber
-                          gh api --method PATCH "repos/$GH_REPO/git/refs/tags/latest" \
-                              -f sha="$SOURCE_SHA" -F force=true
-                          gh release edit latest --latest --title 'ReviewToolLite latest' \
-                              --notes-file release-notes.md
-                      else
-                          gh release create latest dist/bundled.js dist/ReviewToolLite.user.js \
-                              --target "$SOURCE_SHA" --latest --title 'ReviewToolLite latest' \
-                              --notes-file release-notes.md
-                      fi
-                      exit 0
-                  fi
-
-                  if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
-                      gh release upload "$RELEASE_TAG" dist/bundled.js dist/ReviewToolLite.user.js --clobber
-                      exit 0
-                  fi
-                  flags=()
-                  if [[ "$RELEASE_TAG" == *-* ]]; then
-                      flags+=(--prerelease)
-                  fi
-                  gh release create "$RELEASE_TAG" dist/bundled.js dist/ReviewToolLite.user.js \
-                      --verify-tag \
-                      --generate-notes \
-                      --title "ReviewToolLite $RELEASE_TAG" \
-                      "${flags[@]}"
+          test -s dist/release-notes.md
+          flags=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            flags+=(--prerelease)
+          fi
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${files[@]}" --clobber
+            gh release edit "$RELEASE_TAG" \
+              --title "ReviewToolLite ${RELEASE_TAG#v}" \
+              --notes-file dist/release-notes.md \
+              "${flags[@]}"
+          else
+            gh release create "$RELEASE_TAG" "${files[@]}" \
+              --verify-tag \
+              --target "$SOURCE_SHA" \
+              --title "ReviewToolLite ${RELEASE_TAG#v}" \
+              --notes-file dist/release-notes.md \
+              "${flags[@]}"
+          fi

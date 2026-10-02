@@ -3,5 +3,10 @@
 node_modules/
 npm-debug.log*
 .DS_Store
-dist/
+dist/*
+!dist/bundled.js
+!dist/bundled.min.js
+!dist/ReviewToolLite.user.js
+!dist/manifest.json
+!dist/LICENSE.txt
 .codex/
