@@ -5,6 +5,7 @@
 ## Contents
 
 - [Unreleased](#unreleased)
+- [1.2.2 — 2026-10-04](#122--2026-10-04)
 - [1.2.1 — 2026-10-03](#121--2026-10-03)
 - [1.2.0 — 2026-09-25](#120--2026-09-25)
 
@@ -13,6 +14,11 @@
 ## Unreleased
 
 No unreleased changes.
+
+## 1.2.2 — 2026-10-04
+
+- Restore native MediaWiki menu links with `mw.util.addPortletLink` and keep Codex layout
+  guidance scoped to gadget dialogs and forms.
 
 ## 1.2.1 — 2026-10-03
 

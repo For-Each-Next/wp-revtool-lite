@@ -5,7 +5,7 @@
  * Purpose: Review articles and provide feedback on Chinese Wikipedia.
  *
  * @name reviewtool
- * @version 1.2.1
+ * @version 1.2.2
  * @license MIT
  *
  * Table of contents:
@@ -16,7 +16,7 @@
 // Original project: https://github.com/QZGao/ReviewTool
 // Modifications: For-Each-Next, with AI assistance
 // Repository: https://github.com/For-Each-Next/wp-revtool-lite
-// Release: 1.2.1
+// Release: 1.2.2
 // License: MIT
 /*!
  * MIT License
@@ -623,13 +623,6 @@ html.rt-selecting .review-tool-annotation-ui.sentence {
     user-select: text !important;
     pointer-events: auto !important;
 }
-
-/* Tools menus perform an action, so retain native button semantics. */
-.review-tool-portlet-button {
-    text-align: start;
-    white-space: normal;
-    width: 100%;
-}
 `;
     }
   });
@@ -642,15 +635,16 @@ html.rt-selecting .review-tool-annotation-ui.sentence {
       }
     }
     if (!item) return;
-    const existing = item.querySelector("a, button");
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "cdx-button cdx-button--action-default cdx-button--weight-quiet review-tool-portlet-button";
-    button.textContent = label;
-    button.title = label;
-    button.addEventListener("click", onClick);
-    if (existing) existing.replaceWith(button);
-    else item.appendChild(button);
+    const link = item.querySelector("a");
+    if (!link) return;
+    const text = document.createTreeWalker(link, NodeFilter.SHOW_TEXT).nextNode();
+    if (text) text.nodeValue = label;
+    else link.appendChild(document.createTextNode(label));
+    link.title = label;
+    link.onclick = (event) => {
+      event.preventDefault();
+      onClick();
+    };
   }
   var init_portlet = __esm({
     "src/platform/mediawiki/portlet.ts"() {

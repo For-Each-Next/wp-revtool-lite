@@ -75,7 +75,9 @@ function setup(t, content = '<p>第一句。第二句。</p>') {
                 item.id = id;
                 const link = document.createElement('a');
                 link.href = href;
-                link.textContent = label;
+                const text = document.createElement('span');
+                text.textContent = label;
+                link.append(text);
                 item.append(link);
                 document.getElementById(target).append(item);
                 return item;
@@ -241,11 +243,28 @@ test('footnote clicks retain native navigation while annotation mode is active',
 });
 
 test('turning annotation mode off cancels pending work; rerendered content gets fresh listeners', async (t) => {
-    const { document, root, flush, select, addMainPageReviewToolButtonsToDOM } =
-        setup(t);
+    const {
+        window,
+        document,
+        root,
+        flush,
+        select,
+        addMainPageReviewToolButtonsToDOM,
+    } = setup(t);
     addMainPageReviewToolButtonsToDOM('Test');
-    const toggle = () =>
-        document.querySelector('#ca-reviewtool-toggle button').click();
+    const link = document.querySelector('#ca-reviewtool-toggle a');
+    const label = link.querySelector('span');
+    assert.equal(document.querySelector('#ca-reviewtool-toggle button'), null);
+    const toggle = () => {
+        const event = new window.MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+        });
+        link.dispatchEvent(event);
+        assert.equal(event.defaultPrevented, true);
+        assert.equal(document.querySelector('#ca-reviewtool-toggle a'), link);
+        assert.equal(link.querySelector('span'), label);
+    };
     toggle();
     await settle();
     assert.ok(root.querySelector('.sentence'));

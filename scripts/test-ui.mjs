@@ -206,7 +206,7 @@ try {
             };
         }, provenance);
         await page.addScriptTag({ content: application });
-        const toggle = page.locator('#ca-reviewtool-toggle button');
+        const toggle = page.locator('#ca-reviewtool-toggle a');
         await toggle.waitFor();
         await toggle.click();
         const sentence = page

@@ -1,6 +1,6 @@
 /**
  * @file src/platform/mediawiki/portlet.ts
- * Purpose: Add an action button inside the active skin's tools portlet.
+ * Purpose: Add a native MediaWiki tools-menu link and bind its action.
  *
  * Table of contents:
  * 1. addPortletTrigger
@@ -20,15 +20,19 @@ export function addPortletTrigger(
     }
     if (!item) return;
 
-    // Replacing only our control releases its previous listener while preserving skin markup.
-    const existing = item.querySelector('a, button');
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className =
-        'cdx-button cdx-button--action-default cdx-button--weight-quiet review-tool-portlet-button';
-    button.textContent = label;
-    button.title = label;
-    button.addEventListener('click', onClick);
-    if (existing) existing.replaceWith(button);
-    else item.appendChild(button);
+    const link = item.querySelector('a');
+    if (!link) return;
+
+    // Update the label without replacing wrappers supplied by the skin.
+    const text = document
+        .createTreeWalker(link, NodeFilter.SHOW_TEXT)
+        .nextNode();
+    if (text) text.nodeValue = label;
+    else link.appendChild(document.createTextNode(label));
+    link.title = label;
+    // Reassign our handler so repeated content updates cannot accumulate listeners.
+    link.onclick = (event) => {
+        event.preventDefault();
+        onClick();
+    };
 }

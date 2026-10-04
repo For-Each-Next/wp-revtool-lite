@@ -532,10 +532,3 @@ html.rt-selecting .review-tool-annotation-ui.sentence {
     user-select: text !important;
     pointer-events: auto !important;
 }
-
-/* Tools menus perform an action, so retain native button semantics. */
-.review-tool-portlet-button {
-    text-align: start;
-    white-space: normal;
-    width: 100%;
-}
